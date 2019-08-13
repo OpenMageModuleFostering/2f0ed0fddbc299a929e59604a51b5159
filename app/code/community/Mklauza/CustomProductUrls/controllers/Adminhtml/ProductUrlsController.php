@@ -23,35 +23,18 @@
 class Mklauza_CustomProductUrls_Adminhtml_ProductUrlsController extends Mage_Adminhtml_Controller_Action {
     
     public function exampleAction() {
+// @test        
+//$profiler = Mage::getSingleton('core/resource')->getConnection('core_write')->getProfiler();
+//$profiler->setEnabled(true);        
         $pattern = $this->getRequest()->getParam('pattern');
-        $data['exampleUrl'] = Mage::helper('mklauza_customproducturls')->getRandomExample($pattern);
+        $patternObject = Mage::getSingleton('mklauza_customproducturls/pattern');
+        $data['exampleUrl'] = $patternObject->setPattern($pattern)->getRandomExample();
+//Mage::log(print_r($profiler->getQueryProfiles(), true), null, 'queries.log', true);
+//Mage::log(array($profiler->getTotalNumQueries(), $profiler->getTotalElapsedSecs()), null, 'queries.log', true);
+//$profiler->setEnabled(false);            
         $data['isSuccess'] = true;
         $this->getResponse()->setHeader('Content-type','application/json',true);
         $this->getResponse()->setBody(json_encode($data));
     }
-//    public function indexAction() {
-//        $this->loadLayout();
-//        $this->_setActiveMenu('system/mklauza_customproducturls');
-//        $this->_title('Custom Product Urls')->_addContent($this->getLayout()->createBlock('mklauza_customproducturls/adminhtml_settingsform'));
-//        $this->renderLayout();    
-//    }
-//    
-//    public function saveAction() {
-//        try {
-//            $enabled = $this->getRequest()->getParam('is_active');
-//            Mage::getSingleton('core/config')->saveConfig('mklauza_customproducturls/general/is_active', $enabled, 'default', '0');
-//            
-//            $pattern = $this->getRequest()->getParam('pattern');
-//            Mage::getSingleton('core/config')->saveConfig('mklauza_customproducturls/general/pattern', $pattern, 'default', '');
-//            
-//            $applyToNew = $this->getRequest()->getParam('apply_to_new');
-//            Mage::getSingleton('core/config')->saveConfig('mklauza_customproducturls/general/apply_to_new', $applyToNew, 'default', '0');            
-//            
-//            $this->_getSession()->addSuccess($this->__('Successfully saved.'));
-//        } catch (Exception $e) {
-//            $this->_getSession()->addError($e->getMessage());
-//        }
-//        $this->_redirect('*/*/index');        
-//    }
     
 }

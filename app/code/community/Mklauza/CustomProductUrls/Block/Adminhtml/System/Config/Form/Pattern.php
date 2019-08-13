@@ -20,13 +20,12 @@
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
-class Mklauza_CustomProductUrls_Block_Adminhtml_Form_Pattern extends Mage_Adminhtml_Block_System_Config_Form_Field {
+class Mklauza_CustomProductUrls_Block_Adminhtml_System_Config_Form_Pattern extends Mage_Adminhtml_Block_System_Config_Form_Field {
     
     protected function _getElementHtml(Varien_Data_Form_Element_Abstract $element)
     {
-//        $this->setElement($element);
         $element->setType('hidden');
-        $html = $this->getLayout()->createBlock('mklauza_customproducturls/adminhtml_settingsform')
+        $html = $this->getLayout()->createBlock('mklauza_customproducturls/adminhtml_form_settings')
                 ->setElement($element)
                 ->toHtml();
 

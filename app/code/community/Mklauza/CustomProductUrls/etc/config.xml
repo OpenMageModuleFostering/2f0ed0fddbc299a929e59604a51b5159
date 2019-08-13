@@ -2,9 +2,10 @@
 <config>
     <modules>
         <Mklauza_CustomProductUrls>
-            <version>0.0.1</version>
+            <version>0.0.2</version>
         </Mklauza_CustomProductUrls>
     </modules>
+    
     <global>
         <blocks>
             <mklauza_customproducturls>
@@ -23,12 +24,11 @@
             <catalog>
                 <rewrite>
                     <product_url>Mklauza_CustomProductUrls_Model_Catalog_Product_Url</product_url>
-                    <!-- Mage_Catalog_Model_Product_Attribute_Backend_Urlkey -->
-                    <!--<product_attribute_backend_urlkey>Mklauza_CustomProductUrls_Model_Catalog_Resource_Product_Attribute_Backend_Urlkey</product_attribute_backend_urlkey>-->
                 </rewrite>
             </catalog>
         </models>     
     </global>
+    
     <adminhtml>
 
         <events>
@@ -75,14 +75,17 @@
                 </Mklauza_CustomProductUrls>
             </modules>
         </translate>
+        
         <layout>
             <updates>
                 <Mklauza_CustomProductUrls>
                     <file>mklauza/product_urls.xml</file>
                 </Mklauza_CustomProductUrls>
             </updates>
-        </layout>        
+        </layout>
+        
     </adminhtml>
+    
     <admin>
         <routers>
             <adminhtml>
@@ -95,4 +98,15 @@
             </adminhtml>
         </routers>
     </admin>    
+    
+    <default>
+        <mklauza_customproducturls>
+            <general>
+                <is_active>1</is_active>
+                <apply_to_new>1</apply_to_new>
+                <pattern>{name}</pattern>
+            </general>
+        </mklauza_customproducturls>
+    </default>
+    
 </config>

@@ -20,19 +20,23 @@
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
-class Mklauza_CustomProductUrls_Block_Adminhtml_MassActionForm extends Mklauza_CustomProductUrls_Block_Adminhtml_Form_Abstract {
+class Mklauza_CustomProductUrls_Block_Adminhtml_Form_Settings extends Mklauza_CustomProductUrls_Block_Adminhtml_Form_Abstract {
     
     public function _construct() {
         parent::_construct();
-        $this->setTemplate('mklauza/customproducturls/massaction.phtml');
+        $this->setTemplate('mklauza/customproducturls/system/settings.phtml');
     }
     
     public function getSubmitUrl() {
-        return Mage::helper('adminhtml')->getUrl('adminhtml/ProductUrlsMassAction/save');
+        return Mage::helper('adminhtml')->getUrl('adminhtml/ProductUrls/save');
     }
     
-    public function getSaveRewritesHistory() {
-        return Mage::getStoreConfigFlag('catalog/seo/save_rewrites_history');
+    public function getIsEnabled() {
+        return $this->_getHelper()->getIsEnabled();
     }
     
+    public function getApplyToNewFlag() {
+        return $this->_getHelper()->getApplyToNewFlag();
+    }
+   
 }

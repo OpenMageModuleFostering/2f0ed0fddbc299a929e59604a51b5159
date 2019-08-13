@@ -30,7 +30,7 @@ class Mklauza_CustomProductUrls_Model_Catalog_Product_Url extends Mage_Catalog_M
      */
     public function formatUrlKey($str)
     {      
-        // added '/' sign
+        // added '/' character
         $urlKey = preg_replace('#[^0-9a-z\/.]+#i', '-', Mage::helper('catalog/product_url')->format($str));      
         $urlKey = strtolower($urlKey);
         $urlKey = trim($urlKey, '-');

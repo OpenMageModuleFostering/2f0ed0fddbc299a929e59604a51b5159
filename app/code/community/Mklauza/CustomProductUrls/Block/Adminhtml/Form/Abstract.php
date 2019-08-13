@@ -21,44 +21,43 @@
  */
 
 abstract class Mklauza_CustomProductUrls_Block_Adminhtml_Form_Abstract extends Mage_Adminhtml_Block_Template {
-    
-//    private $_attributesCollection;
-//    private $_productAttributes;
-    private $_patternChunks;
-    private $_attributesChunks;
-    private $_patternStr;
+
     private $_allowedFormats = array('price');//, 'date', 'price', 'wee');
     
-    public function getSubmitUrl() {
-        throw new Exception($this->_getHelper->__('Implemet ' . get_class($this) . '::getSubmitUrl() method.'));
+    public function _construct() {
+        if( $this->getPatternObject()->getPattern() === null) {
+            if(Mage::app()->getRequest()->getParam('pattern', null)) {
+                $this->getPatternObject()->setPattern(Mage::app()->getRequest()->getParam('pattern'));
+            } else {
+                $this->getPatternObject()->setPattern($this->_helper()->getConfigPattern());
+            }
+        }
     }
+    
+    public abstract function getSubmitUrl();
     
     public function getExampleUrl() {
         return Mage::helper('adminhtml')->getUrl('adminhtml/ProductUrls/example');
     }
     
-    public function setPatternStr($pattern) {
-        $this->_patternStr = $pattern;
+    protected function getPatternObject() {
+        return Mage::getSingleton('mklauza_customproducturls/pattern');
     }
     
-    public function getPatternStr() {
-        if($this->_patternStr === null) {
-            if(Mage::app()->getRequest()->getParam('pattern', null)) {
-                $this->_patternStr = Mage::app()->getRequest()->getParam('pattern');
-            } else {
-                $this->_patternStr = Mage::getStoreConfig('mklauza_customproducturls/general/pattern');
-            }
-        }
-        return $this->_patternStr;
-    }
+    /*
+     * 
+     */
+//    public function getPatternStr() {
+//        return  $this->getPatternObject()->getPattern();
+//    }
     
-    private function chunkToHtmlElement(array $chunk = null) {
+    private function render(array $chunk = null) {
         if(!$chunk || !isset($chunk['value']) || !isset($chunk['type'])) {
             return '';
         }
         
         if($chunk['type'] === 'attribute') {
-            $attributes = $this->getProductAttributes();
+            $attributes = $this->getPatternObject()->getAllProductAttributes();
             $attrId = $chunk['value'];
             return '<span class="inputTags-item blocked" data-value="' . $attrId . '">'
                     . '<span class="value">' . $attributes[$attrId] . '</span>'
@@ -68,61 +67,26 @@ abstract class Mklauza_CustomProductUrls_Block_Adminhtml_Form_Abstract extends M
         }
     }
     
-    public function getAttributesCollection() {
-        return $this->_getHelper()->getAttributesCollection();
-    }    
-    
-    public function getProductAttributes() {
-        return $this->_getHelper()->getProductAttributes();
-    }     
-    
-    public function getPatternChunks() {
-        if($this->_patternChunks === null) {
-            $urlPattern = $this->getPatternStr();
-            $this->_patternChunks = $this->_getHelper()->extractChunks($urlPattern);
-        }
-        return $this->_patternChunks;
-    }
-    
     public function getPatternHtml() {
-        
-        $chunks = $this->getPatternChunks();
+        $chunks = $this->getPatternObject()->getPatternChunks();
         $html = '';
         foreach ($chunks as $_chunk) {
-            $html .= $this->chunkToHtmlElement($_chunk);
+            $html .= $this->render($_chunk);
         }
         
         return $html;
     }    
-    
-    public function getAttributesChunks() {
-        if($this->_attributesChunks === null) {
-            $attributes = $this->getProductAttributes();
-            $patternChunks = $this->getPatternChunks();
-            foreach($patternChunks as $chunk) {
-                if($chunk['type'] === 'attribute') {
-                    $attrId = $chunk['value'];
-                    unset($attributes[$attrId]);
-                }
-            }
-            $this->_attributesChunks = array();
-            foreach($attributes as $id => $name) {
-                $this->_attributesChunks[] = array('value' => $id, 'type' => 'attribute');
-            }
-        }
-        return $this->_attributesChunks;
-    }
     
     public function getAttributesCloudHtml() {
-        $chunks = $this->getAttributesChunks();
+        $chunks = $this->getPatternObject()->getAllProductAttributesChunks();
         $html = '';
         foreach ($chunks as $_chunk) {
-            $html .= $this->chunkToHtmlElement($_chunk);
+            $html .= $this->render($_chunk);
         }
         return $html;
     }
     
-    protected function _getHelper() {
+    protected function _helper() {
         return Mage::helper('mklauza_customproducturls');
     }
     

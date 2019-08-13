@@ -32,49 +32,14 @@ class Mklauza_CustomProductUrls_Model_Adminhtml_Observer {
 
             $block->getMassactionBlock()->addItem('mklauza_customproducturls', array(
                 'label' => 'Set custom URL',
-//                'url' => $block->getUrl('*/productUrls'),
                 'url' => $block->getUrl('*/productUrlsMassAction/edit'),
             ));
-
-//            $columnId = 'massaction';
-//
-//            $massactionColumn = array(
-//                'index' => $block->getMassactionIdField(),
-//                'filter_index' => $block->getMassactionIdFilter(),
-//                'type' => 'massaction',
-//                'name' => $block->getMassactionBlock()->getFormFieldName(),
-//                'align' => 'center',
-//                'is_system' => true
-//            );
-//
-//            if ($block->getNoFilterMassactionColumn()) {
-//                $massactionColumn->setData('filter', false);
-//            }
-//
-//            // rearrange the columns;
-//            $oldColumns = $block->getColumns();
-//            foreach($oldColumns as $column){
-//               $block->removeColumn($column->getId());  
-//            }
-
-//            $block->addColumn($columnId, $massactionColumn);
-//            $block->addColumn('block_id', array(
-//                'header' => Mage::helper('cms')->__('ID'),
-//                'width' => '50px',
-//                'type' => 'number',
-//                'index' => 'block_id',
-//            ));
-
-            // put back the original columns
-//            foreach($oldColumns as $column){
-//                $block->addColumn($column->getId(),$column->getData());
-//            }
 
             return $this;
         }
     }
     
-    public function addClearPermanentRedirectsButton(Varien_Event_Observer $observer) {
+    public function addClearPermanentRedirectsButton(Varien_Event_Observer $observer) { // adminhtml_block_html_before
         $block = $observer->getEvent()->getBlock();
         if (Mage::helper('mklauza_customproducturls')->getIsEnabled() && $block instanceof Mage_Adminhtml_Block_Urlrewrite) {
             $block->addButton('clear', array(

@@ -54,7 +54,9 @@ class Mklauza_CustomProductUrls_Model_Catalog_Resource_Product_Action extends Ma
 //        Mage::register('save_rewrite_history', $origSaveHistory);
         Mage::getSingleton('core/config')->saveConfig('catalog/seo/save_rewrites_history', (bool) $urlKeyCreateRedirect);
         Mage::app()->getConfig()->reinit();
-
+        $urlModel = Mage::getModel('catalog/product_url');
+        $patternObject = Mage::getSingleton('mklauza_customproducturls/pattern')->setPattern($urlPattern);
+        
         $this->_getWriteAdapter()->beginTransaction();
         try {
             $attribute = $this->getAttribute('url_key');
@@ -72,7 +74,8 @@ class Mklauza_CustomProductUrls_Model_Catalog_Resource_Product_Action extends Ma
 //                $rewriteAttribute = $this->getAttribute('save_rewrites_history');
 //                $this->_saveAttributeValue($object, $rewriteAttribute, $urlKeyCreateRedirect);
                 
-                $value = $this->_getHelper()->prepareUrlKey($entityId, $urlPattern, $storeId);
+                $value = $patternObject->prepareUrlKey($entityId, $storeId);
+                $value = $urlModel->formatUrlKey($value);
                 // collect data for save
                 $this->_saveAttributeValue($object, $attribute, $value);
                 // save collected data every 1000 rows

@@ -32,11 +32,11 @@ class Mklauza_CustomProductUrls_Adminhtml_Catalog_Product_Action_ProductUrlsMass
         
     }
   
-//    protected function _construct()
-//    {
-//        // Define module dependent translate
-//        $this->setUsedModuleName('Mage_Catalog');
-//    }
+    protected function _construct()
+    {
+        // Define module dependent translate
+        $this->setUsedModuleName('Mage_Catalog');
+    }
     
     public function editAction()
     {
@@ -47,7 +47,7 @@ class Mklauza_CustomProductUrls_Adminhtml_Catalog_Product_Action_ProductUrlsMass
         $this->loadLayout();
         $this->_setActiveMenu('catalog/product');
         
-        $formBlock = $this->getLayout()->createBlock('mklauza_customproducturls/adminhtml_massactionform');
+        $formBlock = $this->getLayout()->createBlock('mklauza_customproducturls/adminhtml_form_massaction');
         
         $this->_title('Custom Product Urls')->_addContent($formBlock);
         $this->renderLayout();    
@@ -58,6 +58,10 @@ class Mklauza_CustomProductUrls_Adminhtml_Catalog_Product_Action_ProductUrlsMass
      */
     public function saveAction()
     {
+// @test        
+//$profiler = Mage::getSingleton('core/resource')->getConnection('core_write')->getProfiler();
+//$profiler->setEnabled(true);
+   
         if (!$this->_validateProducts()) {
             $this->_getSession()->addError($this->__('Validation failed.'));
             return $this->_redirectReferer();
@@ -66,9 +70,10 @@ class Mklauza_CustomProductUrls_Adminhtml_Catalog_Product_Action_ProductUrlsMass
         /* Collect Data */
         $pattern  = $this->getRequest()->getParam('pattern', '');
         $urlKeyCreateRedirect = (int) $this->getRequest()->getParam('url_key_create_redirect');
+        $reindexCatalogUrls  = $this->getRequest()->getParam('reindex', '');
 
         try {
-                $storeId    = $this->_getHelper()->getSelectedStoreId();
+                $storeId    = $this->_helper()->getSelectedStoreId();
 
                 $attribute = Mage::getSingleton('eav/config')
                     ->getAttribute(Mage_Catalog_Model_Product::ENTITY, 'url_key');
@@ -78,16 +83,17 @@ class Mklauza_CustomProductUrls_Adminhtml_Catalog_Product_Action_ProductUrlsMass
 
                 Mage::getSingleton('mklauza_customproducturls/catalog_resource_product_action')
                         ->updateUrlKeyAttributes(
-                                $this->_getHelper()->getProductIds(), 
+                                $this->_helper()->getProductIds(), 
                                 $pattern, 
                                 $urlKeyCreateRedirect, 
                                 $storeId
                             );
-                $process = Mage::getModel('index/indexer')->getProcessByCode('catalog_url');
-                $process->reindexAll();                
+                if(!empty($reindexCatalogUrls)) {
+                    Mage::getModel('index/indexer')->getProcessByCode('catalog_url');
+                }
                  
             $this->_getSession()->addSuccess(
-                $this->__('Total of %d record(s) were updated', count($this->_getHelper()->getProductIds()))
+                $this->__('Total of %d record(s) were updated', count($this->_helper()->getProductIds()))
             );
         }
         catch (Mage_Core_Exception $e) {
@@ -96,14 +102,13 @@ class Mklauza_CustomProductUrls_Adminhtml_Catalog_Product_Action_ProductUrlsMass
         catch (Exception $e) {
             $this->_getSession()->addException($e, $this->__('An error occurred while updating the product(s) attributes.'));
         }
-
-        $this->_redirect('*/catalog_product/', array('store'=>$this->_getHelper()->getSelectedStoreId()));
-//        $this->loadLayout();
-//        $this->_setActiveMenu('catalog/product');
+//// @test
+//Mage::log(print_r($profiler->getQueryProfiles(), true), null, 'queries.log', true);
+//Mage::log(array($profiler->getTotalNumQueries(), $profiler->getTotalElapsedSecs()), null, 'queries.log', true);
 //
-//        $this->getLayout();        
-//        $this->_title('Custom Product Urls - after save!');
-//        $this->renderLayout();            
+//$profiler->setEnabled(false);     
+//die();
+        $this->_redirect('*/catalog_product/', array('store'=>$this->_helper()->getSelectedStoreId()));          
     }
 
     /**
@@ -114,7 +119,7 @@ class Mklauza_CustomProductUrls_Adminhtml_Catalog_Product_Action_ProductUrlsMass
     protected function _validateProducts()
     {
         $error = false;
-        $productIds = $this->_getHelper()->getProductIds();
+        $productIds = $this->_helper()->getProductIds();
       
         if (!is_array($productIds)) {
             $error = $this->__('Please select products for attributes update');
@@ -135,7 +140,7 @@ class Mklauza_CustomProductUrls_Adminhtml_Catalog_Product_Action_ProductUrlsMass
      *
      * @return Mage_Adminhtml_Helper_Catalog_Product_Edit_Action_Attribute
      */
-    protected function _getHelper()
+    protected function _helper()
     {
         return Mage::helper('adminhtml/catalog_product_edit_action_attribute');
     }
@@ -159,7 +164,7 @@ class Mklauza_CustomProductUrls_Adminhtml_Catalog_Product_Action_ProductUrlsMass
         try {
             if ($attributesData) {
                 $dateFormat = Mage::app()->getLocale()->getDateFormat(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT);
-                $storeId    = $this->_getHelper()->getSelectedStoreId();
+                $storeId    = $this->_helper()->getSelectedStoreId();
 
                 foreach ($attributesData as $attributeCode => $value) {
                     $attribute = Mage::getSingleton('eav/config')
@@ -197,9 +202,9 @@ class Mklauza_CustomProductUrls_Adminhtml_Catalog_Product_Action_ProductUrlsMass
         try {
             $write->beginTransaction();
             $table = Mage::getSingleton('core/resource')->getTableName('core/url_rewrite');
-            $write->query('DELETE FROM ' . $table . ' WHERE options IS NOT NULL AND is_system = 0');
+            $count = $write->exec('DELETE FROM ' . $table . ' WHERE options IS NOT NULL AND is_system = 0');
             $write->commit();
-            $this->_getSession()->addSuccess($this->__('Successfully ...'));
+            $this->_getSession()->addSuccess($this->__('Successfully removed %s redirects.', $count));
         } catch(Exception $e) {
             $write->rollback();
             $this->_getSession()->addException($e, $this->__('An error occurred while clearing url redirects.<br/>' . $e->getMessage()));            
