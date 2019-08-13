@@ -28,8 +28,11 @@
 <div class="js-pattern inputTags-list">
     <?php echo $this->getPatternHtml() ?>
 </div>
-
 <div>
+    <input id="reindex_catalog_urls" name="reindex_catalog_urls" type="checkbox" onclick="jQuery('#js-url-rewrite-container').toggle();"> <!-- checked="checked" -->
+    <label for="reindex_catalog_urls"><?php echo $this->__('Reindex changed product urls') ?></label> 
+</div>
+<div id="js-url-rewrite-container" style="display: none;">
     <input id="url_key_create_redirect" name="url_key_create_redirect" <?php echo $this->getSaveRewritesHistory() ? 'checked' : '' ?> type="checkbox"> <!-- checked="checked" -->
     <label for="url_key_create_redirect"><?php echo $this->__('Create Permanent Redirect (301) for old URL') ?></label> 
 </div>
@@ -66,8 +69,9 @@
     
     submitChanges = function(url) {
         patternParam = serializePattern();
-        var saveRewrite = document.getElementById('url_key_create_redirect').checked == true ? 1 : 0;
-        location.href = url + '?pattern=' + encodeURIComponent(patternParam) + '&url_key_create_redirect=' + saveRewrite ;
+        var reindexUrls = document.getElementById('reindex_catalog_urls').checked == true ? 1 : 0;
+        var saveRewriteUrls = document.getElementById('url_key_create_redirect').checked == true ? 1 : 0;
+        location.href = url + '?pattern=' + encodeURIComponent(patternParam) + '&reindex_catalog_urls=' + reindexUrls + '&url_key_create_redirect=' + saveRewriteUrls ;
     };    
     
     jQuery(document).ready(function(){

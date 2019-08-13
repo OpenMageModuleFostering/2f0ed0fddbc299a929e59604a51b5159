@@ -59,7 +59,8 @@ class Mklauza_CustomProductUrls_Model_Adminhtml_Observer {
             $urlPattern = Mage::helper('mklauza_customproducturls')->getConfigPattern();
             $storeId = Mage::app()->getStore()->getId();
             
-            $url_key = Mage::helper('mklauza_customproducturls')->prepareUrlKey($product->getId(), $urlPattern, $storeId);
+            $patternModel = Mage::getSingleton('mklauza_customproducturls/pattern');
+            $url_key = $patternModel->setPattern($urlPattern)->prepareUrlKey($product->getId(), $storeId);
             $product->setUrlKey($url_key)->getResource()->saveAttribute($product, 'url_key'); 
             Mage::unregister('generate_url');
         }      

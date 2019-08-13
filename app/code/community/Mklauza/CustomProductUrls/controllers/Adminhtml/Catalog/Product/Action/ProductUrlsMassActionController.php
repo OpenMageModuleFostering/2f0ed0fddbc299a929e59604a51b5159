@@ -69,8 +69,8 @@ class Mklauza_CustomProductUrls_Adminhtml_Catalog_Product_Action_ProductUrlsMass
 
         /* Collect Data */
         $pattern  = $this->getRequest()->getParam('pattern', '');
-        $urlKeyCreateRedirect = (int) $this->getRequest()->getParam('url_key_create_redirect');
-        $reindexCatalogUrls  = $this->getRequest()->getParam('reindex', '');
+        $reindexCatalogUrls  = (bool) $this->getRequest()->getParam('reindex_catalog_urls', null);
+        $urlKeyCreateRedirect = (bool) $this->getRequest()->getParam('url_key_create_redirect', null);
 
         try {
                 $storeId    = $this->_helper()->getSelectedStoreId();
@@ -88,8 +88,19 @@ class Mklauza_CustomProductUrls_Adminhtml_Catalog_Product_Action_ProductUrlsMass
                                 $urlKeyCreateRedirect, 
                                 $storeId
                             );
-                if(!empty($reindexCatalogUrls)) {
-                    Mage::getModel('index/indexer')->getProcessByCode('catalog_url');
+                
+                // reindex product related urls
+                if($reindexCatalogUrls) {
+                    $urlModel = Mage::getSingleton('catalog/url');     
+                    // set save rewrite flag
+                    if($urlKeyCreateRedirect) {
+                        $urlModel->setShouldSaveRewritesHistory(true);
+                    }
+                    // reindex product urls
+                    $urlModel->clearStoreInvalidRewrites(); // Maybe some products were moved or removed from website
+                    foreach ($this->_helper()->getProductIds() as $productId) {
+                         $urlModel->refreshProductRewrite($productId);
+                    }                  
                 }
                  
             $this->_getSession()->addSuccess(
@@ -105,7 +116,6 @@ class Mklauza_CustomProductUrls_Adminhtml_Catalog_Product_Action_ProductUrlsMass
 //// @test
 //Mage::log(print_r($profiler->getQueryProfiles(), true), null, 'queries.log', true);
 //Mage::log(array($profiler->getTotalNumQueries(), $profiler->getTotalElapsedSecs()), null, 'queries.log', true);
-//
 //$profiler->setEnabled(false);     
 //die();
         $this->_redirect('*/catalog_product/', array('store'=>$this->_helper()->getSelectedStoreId()));          

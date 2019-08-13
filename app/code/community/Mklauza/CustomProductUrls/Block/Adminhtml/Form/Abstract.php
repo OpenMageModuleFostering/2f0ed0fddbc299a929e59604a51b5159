@@ -44,13 +44,6 @@ abstract class Mklauza_CustomProductUrls_Block_Adminhtml_Form_Abstract extends M
         return Mage::getSingleton('mklauza_customproducturls/pattern');
     }
     
-    /*
-     * 
-     */
-//    public function getPatternStr() {
-//        return  $this->getPatternObject()->getPattern();
-//    }
-    
     private function render(array $chunk = null) {
         if(!$chunk || !isset($chunk['value']) || !isset($chunk['type'])) {
             return '';

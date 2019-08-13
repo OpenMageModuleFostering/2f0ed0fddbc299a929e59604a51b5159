@@ -25,28 +25,37 @@ class Mklauza_CustomProductUrls_Model_Pattern extends Varien_Object {
     private $_attributesCollection;
     private $_productAttributes;
     private $_attributesChunks;
-    private $_patternChunks;
-    
-//    public function __construct() {
-//        if( $this->getPattern() === null) {
-//            $this->setPattern($this->_helper()->getConfigPattern());
-//        }
-//    }    
+    private $_patternChunks; 
     
     private function getAttributesCollection() {
-        $this->_attributesCollection = json_decode(Mage::app()->getCache()->load('mklauza_product_attributes_collection'), true);
+       
+//        $attributesCache = Mage::app()->getCache()->load('mklauza_cusomproducturls_product_attribute_collection');
+//        if(!$this->_attributesCollection && !empty($attributesCache)) {
+//            $this->_attributesCollection = Mage::getResourceModel('catalog/product_attribute_collection');
+//            $this->_attributesCollection->setData(unserialize($attributesCache));
+//        }
         if(!$this->_attributesCollection) {
+            // Mage_Catalog_Model_Resource_Product_Attribute_Collection
             $this->_attributesCollection =  Mage::getResourceModel('catalog/product_attribute_collection')
                     ->addVisibleFilter('is_visible_on_front', array('=' => '1'))
                     ->addFieldTofilter('attribute_code', array('neq' => 'url_key'));
-            Mage::app()->getCache()->remove('mklauza_cusomproducturls_product_attributes_collection');
-            Mage::app()->getCache()->save(
-                    json_encode($this->_attributesCollection), 
-                    "mklauza_cusomproducturls_product_attributes_collection", 
-                    array("mklauza_cusomproducturls"), 
-                    3*60
-                );
+            
+//                $this->_attributesCollection->initCache(
+//                        Mage::app()->getCache()->setLifetime(3*60), 
+//                        'Bestsellers_lalala', //this is just custom prefix
+//                        array('collections')
+//                    );            
+
+//            Mage::app()->getCache()->remove('mklauza_cusomproducturls_product_attribute_collection');
+//            Mage::app()->getCache()->save(
+//                    serialize($this->_attributesCollection->getData()), 
+//                    "mklauza_cusomproducturls_product_attribute_collection", 
+//                    array("mklauza_cusomproducturls"), 
+//                    3*60
+//                );
+//            var_dump($this->_attributesCollection);
         }
+        
         return $this->_attributesCollection;
     }   
     
@@ -151,9 +160,16 @@ class Mklauza_CustomProductUrls_Model_Pattern extends Varien_Object {
         return $attributes;
     }
     
-    public function prepareUrlKey($productId, $storeId) {        
+    public function prepareUrlKey($productId, $storeId) {       
+//// @test        
+$profiler = Mage::getSingleton('core/resource')->getConnection('core_write')->getProfiler();
+$profiler->setEnabled(true);            
         $chunks = $this->getPatternChunks();
         $patternAttributes = $this->getPatternAttributesValues();
+//// @test
+Mage::log(print_r($profiler->getQueryProfiles(), true), null, 'queries.log', true);
+Mage::log(array($profiler->getTotalNumQueries(), $profiler->getTotalElapsedSecs()), null, 'summary.log', true);
+$profiler->setEnabled(false);
 
         foreach($patternAttributes as $code => &$value) {
             $rawValue = Mage::getModel('catalog/product')->getResource()->getAttributeRawValue($productId, $code, $storeId);
@@ -177,27 +193,22 @@ class Mklauza_CustomProductUrls_Model_Pattern extends Varien_Object {
                 $url_str .= $chunk['value'];
             }
         }
-        
-        return $url_str;
+
+        $url_key = Mage::getModel('catalog/product_url')->formatUrlKey($url_str);
+        return $url_key;
     }   
     
     public function getRandomExample() {
         $storeId = Mage::app()->getStore()->getStoreId();
-//// @test        
-//$profiler = Mage::getSingleton('core/resource')->getConnection('core_write')->getProfiler();
-//$profiler->setEnabled(true);        
+    
         // get random product Id
         $collection = Mage::getResourceModel('catalog/product_collection')
                 ->addStoreFilter($storeId)
                 ->addFieldToFilter('visibility', array('neq' => Mage_Catalog_Model_Product_Visibility::VISIBILITY_NOT_VISIBLE));
         $collection->getSelect()->reset(Zend_Db_Select::COLUMNS)->columns('entity_id')->order(new Zend_Db_Expr('RAND()'))->limit(1);
         $productId = $collection->getFirstItem()->getId();
-//// @test
-//Mage::log(print_r($profiler->getQueryProfiles(), true), null, 'example.log', true);
-//Mage::log(array($profiler->getTotalNumQueries(), $profiler->getTotalElapsedSecs()), null, 'example.log', true);
-//$profiler->setEnabled(false);           
+           
         $url_key = $this->prepareUrlKey($productId, $storeId);
-        $url_key = Mage::getModel('catalog/product_url')->formatUrlKey($url_key);
         return Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . $url_key . Mage::getStoreConfig('catalog/seo/product_url_suffix');
     }    
 }
