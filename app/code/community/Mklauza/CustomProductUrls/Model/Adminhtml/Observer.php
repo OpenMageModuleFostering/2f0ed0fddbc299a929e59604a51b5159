@@ -28,7 +28,7 @@ class Mklauza_CustomProductUrls_Model_Adminhtml_Observer {
         if (Mage::helper('mklauza_customproducturls')->getIsEnabled() && $block instanceof Mage_Adminhtml_Block_Catalog_Product_Grid) {
             $block->setMassactionIdField('mklauza_customproducturls_massaction');
             $block->getMassactionBlock()->setFormFieldName('product');
-            $block->getMassactionBlock()->setUseSelectAll(false);
+//            $block->getMassactionBlock()->setUseSelectAll(false);
 
             $block->getMassactionBlock()->addItem('mklauza_customproducturls', array(
                 'label' => 'Set custom URL',

@@ -217,7 +217,7 @@ class Mklauza_CustomProductUrls_Adminhtml_Catalog_Product_Action_ProductUrlsMass
             $this->_getSession()->addSuccess($this->__('Successfully removed %s redirects.', $count));
         } catch(Exception $e) {
             $write->rollback();
-            $this->_getSession()->addException($e, $this->__('An error occurred while clearing url redirects.<br/>' . $e->getMessage()));            
+            $this->_getSession()->addException($this->__("An error occurred while clearing url redirects: %s", $e->getMessage()));            
         }
         
         $this->_redirectReferer();
