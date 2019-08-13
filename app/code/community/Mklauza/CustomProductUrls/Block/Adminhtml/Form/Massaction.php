@@ -28,7 +28,8 @@ class Mklauza_CustomProductUrls_Block_Adminhtml_Form_Massaction extends Mklauza_
     }
     
     public function getSubmitUrl() {
-        return Mage::helper('adminhtml')->getUrl('adminhtml/ProductUrlsMassAction/save');
+        $storeId = Mage::app()->getRequest()->getParam('store', 0);
+        return Mage::helper('adminhtml')->getUrl('adminhtml/ProductUrlsMassAction/save', array('store' => $storeId));
     }
     
     public function getSaveRewritesHistory() {

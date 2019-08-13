@@ -25,7 +25,7 @@ class Mklauza_CustomProductUrls_Adminhtml_Catalog_Product_Action_ProductUrlsMass
     // @overridden
     public function preDispatch() {
         parent::preDispatch();
-        if(!Mage::GetStoreConfigFlag('mklauza_customproducturls/general/is_active')) {
+        if(!Mage::helper('mklauza_customproducturls')->getIsEnabled()) {
             $this->_redirect('adminhtml/dashboard');
             return;
         }
@@ -117,7 +117,7 @@ class Mklauza_CustomProductUrls_Adminhtml_Catalog_Product_Action_ProductUrlsMass
 //Mage::log(print_r($profiler->getQueryProfiles(), true), null, 'queries.log', true);
 //Mage::log(array($profiler->getTotalNumQueries(), $profiler->getTotalElapsedSecs()), null, 'queries.log', true);
 //$profiler->setEnabled(false);     
-//die();
+
         $this->_redirect('*/catalog_product/', array('store'=>$this->_helper()->getSelectedStoreId()));          
     }
 

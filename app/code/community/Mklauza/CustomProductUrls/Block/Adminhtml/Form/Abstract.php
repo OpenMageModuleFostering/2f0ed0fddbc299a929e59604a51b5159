@@ -37,7 +37,8 @@ abstract class Mklauza_CustomProductUrls_Block_Adminhtml_Form_Abstract extends M
     public abstract function getSubmitUrl();
     
     public function getExampleUrl() {
-        return Mage::helper('adminhtml')->getUrl('adminhtml/ProductUrls/example');
+        $storeId = Mage::app()->getRequest()->getParam('store', 0);
+        return Mage::helper('adminhtml')->getUrl('adminhtml/ProductUrls/example', array('store' => $storeId));
     }
     
     protected function getPatternObject() {

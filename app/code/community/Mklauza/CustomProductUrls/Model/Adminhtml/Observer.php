@@ -30,9 +30,10 @@ class Mklauza_CustomProductUrls_Model_Adminhtml_Observer {
             $block->getMassactionBlock()->setFormFieldName('product');
 //            $block->getMassactionBlock()->setUseSelectAll(false);
 
+            $storeId = Mage::app()->getRequest()->getParam('store', 0);
             $block->getMassactionBlock()->addItem('mklauza_customproducturls', array(
                 'label' => 'Set custom URL',
-                'url' => $block->getUrl('*/productUrlsMassAction/edit'),
+                'url' => $block->getUrl('*/productUrlsMassAction/edit', array('store' => $storeId)),
             ));
 
             return $this;
@@ -53,9 +54,7 @@ class Mklauza_CustomProductUrls_Model_Adminhtml_Observer {
     public function generateUrlKey(Varien_Event_Observer $observer) { // catalog_product_save_after
         $product = $observer->getEvent()->getProduct();
 
-        if(Mage::registry('generate_url') && $product->getId()) {   // in case we save product with empty url key               
-            // && !($product->getTypeId() == 'simple' && $product->getAttributeSetId() == $this->getAttributeSetId('prenumerata'))
-            
+        if(Mage::registry('generate_url') && $product->getId()) {   // in case we save product with empty url key
             $urlPattern = Mage::helper('mklauza_customproducturls')->getConfigPattern();
             $storeId = Mage::app()->getStore()->getId();
             
