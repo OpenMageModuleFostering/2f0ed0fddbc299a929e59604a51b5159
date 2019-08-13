@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package>
+    <name>2f0ed0fddbc299a929e59604a51b5159</name>
+    <version>1.0.0</version>
+    <stability>devel</stability>
+    <license>OSL</license>
+    <channel>community</channel>
+    <extends/>
+    <summary>Create mass custom product urls.</summary>
+    <description>Extension allowing to mass change product url key according to template consisting of product attributes.</description>
+    <notes>notes</notes>
+    <authors><author><name>Marcin Klauza</name><user>marcin</user><email>marcinklauza@gmail.com</email></author></authors>
+    <date>2015-11-29</date>
+    <time>15:23:22</time>
+    <contents><target name="magecommunity"><dir><dir name="Mklauza"><dir name="CustomProductUrls"><dir name="Block"><dir name="Adminhtml"><dir name="Form"><file name="Abstract.php" hash="afca4db57042355a089f0ec809135c2b"/><file name="Pattern.php" hash="6497c9271c7418fea95f457a8dff8741"/></dir><file name="MassActionForm.php" hash="6b67e72a96d2548be84a51bc9241d4e6"/><file name="SettingsForm.php" hash="a07564eb01840511b6e2b24149f0dd6a"/><dir name="Urlrewrite"><file name="Grid.php" hash="48789c8053977b71111b600fcac592c6"/></dir></dir></dir><dir name="Helper"><file name="Data.php" hash="68f7d60c4916a57ab15b765a06957af4"/></dir><dir name="Model"><dir name="Adminhtml"><file name="Observer.php" hash="bc11ab14c66255cda7f6ae09934488a5"/></dir><dir name="Catalog"><dir name="Product"><file name="Url.php" hash="c14f7d9a39775c1e636286c9f7820cc2"/></dir><dir name="Resource"><dir name="Product"><file name="Action.php" hash="1dc3bb8d629f799812e1a0f72ab43902"/><dir name="Attribute"><dir name="Backend"><file name="_Urlkey.php" hash="7d8ca0fe2c768d2b89daa2d5b567b474"/></dir></dir></dir></dir></dir></dir><dir name="controllers"><dir name="Adminhtml"><dir name="Catalog"><dir name="Product"><dir name="Action"><file name="ProductUrlsMassActionController.php" hash="25744bc799faf9871f16067762834191"/></dir></dir></dir><file name="ProductUrlsController.php" hash="c11f3161ab717132e4db2e9931d5d422"/></dir></dir><dir name="etc"><file name="adminhtml.xml" hash="54ab0a5774d316a80e05ebbd908ead77"/><file name="config.xml" hash="a80f832c6649cbccd77f46d490a44d39"/><file name="system.xml" hash="62c471970b154f3f19ac6ebb82e9cd0c"/></dir></dir></dir></dir></target><target name="magedesign"><dir><dir name="adminhtml"><dir name="default"><dir name="default"><dir name="layout"><dir name="mklauza"><file name="product_urls.xml" hash="ad42e99261645c3993390b60d5bc7a66"/></dir></dir><dir name="template"><dir name="mklauza"><dir name="customproducturls"><file name="massaction.phtml" hash="fe77f7260f20c727447131ae3b6942f2"/><dir name="system"><file name="settings.phtml" hash="989bab675608982ea10b552a740dd5a6"/></dir></dir></dir></dir></dir></dir></dir></dir></target><target name="mageetc"><dir><dir name="modules"><file name="Mklauza_CustomProductUrls.xml" hash="0f6d8d6a5dd2261fed9f49e853f68adf"/></dir></dir></target></contents>
+    <compatible/>
+    <dependencies><required><php><min>5.1.0</min><max>6.0.0</max></php></required></dependencies>
+</package>
