@@ -1,16 +1,19 @@
 {
-    "name": "OpenMageModuleFostering/2f0ed0fddbc299a929e59604a51b5159",
+    "name": "OpenMageModuleFostering\/2f0ed0fddbc299a929e59604a51b5159",
     "type": "magento-module",
     "license": "OSL",
     "homepage": "",
     "description": "Create mass custom product urls.",
     "authors": [
-    {
-        "name": "Marcin Klauza",
-        "email": "marcinklauza@gmail.com"
-    }
-],
+        {
+            "name": "Marcin Klauza",
+            "email": "marcinklauza@gmail.com"
+        }
+    ],
     "suggest": {
-        "magento-hackathon/magento-composer-installer": "*"
-    }
+        "magento-hackathon\/magento-composer-installer": "*"
+    },
+    "keywords": [
+        "openmage-module"
+    ]
 }
