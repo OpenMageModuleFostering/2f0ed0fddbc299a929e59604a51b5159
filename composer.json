@@ -1,7 +1,7 @@
 {
-    "name": "OpenMageModuleFostering\/2f0ed0fddbc299a929e59604a51b5159",
+    "name": "openmage-module-fostering\/2f0ed0fddbc299a929e59604a51b5159",
     "type": "magento-module",
-    "license": "OSL",
+    "license": "OSL-3.0",
     "homepage": "",
     "description": "Create mass custom product urls.",
     "authors": [
